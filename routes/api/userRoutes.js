@@ -1,12 +1,35 @@
 const router = require('express').Router();
 
-// '/' GET all users
-// '/:id' GET user by id and their friends
-// '/' POST a new user
-// '/:id' PUT an updated user by id
-// '/:id' DELETE a user by id, including thoughts
+// USER ROUTES
+// GET ROUTE - ALL
+router.get('/',(req,res)=>{
+    res.json("GET all users")
+});
+// GET ROUTE - SINGULAR BY ID, WITH FRIENDS
+router.get('/:id',(req,res)=>{
+    res.json(`GET user ${req.params.id} and their friends`)
+});
+// POST ROUTE
+router.post('/',(req,res)=>{
+    res.json(`POST a new user`)
+});
+// PUT ROUTE
+router.put('/:id',(req,res)=>{
+    res.json(`UPDATE user ${req.params.id}`)
+});
+// DELETE ROUTE
+router.delete('/:id',(req,res)=>{
+    res.json(`DELETE user ${req.params.id}`)
+});
 
-// '/:id/friends/:fId' POST a new friend to a user's friends list
-// '/:id/friends/:fId' DELETE a friend from a user's friends list
+// FRIENDS ROUTES
+// POST ROUTE
+router.post('/:id/friends/:fId',(req,res)=>{
+    res.json(`POST friend ${req.params.fId} to user ${req.params.id}`)
+});
+// DELETE ROUTE
+router.delete('/:id/friends/:fId',(req,res)=>{
+    res.json(`DELETE friend ${req.params.fId} from user ${req.params.id}`)
+});
 
 module.exports = router;
