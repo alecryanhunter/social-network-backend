@@ -15,7 +15,14 @@ router.get('/',(req,res)=>{
 });
 // GET ROUTE - SINGULAR BY ID
 router.get('/:id',(req,res)=>{
-    res.json(`GET thought ${req.params.id}`)
+    Thought.findById(req.params.id)
+    .then(thought=>{
+        res.json(thought);
+    })
+    .catch(err=>{
+        console.log(err);
+        res.status(500).json({msg:"error occurred",err})
+    })
 });
 // POST ROUTE
 router.post('/',(req,res)=>{
@@ -43,21 +50,63 @@ router.post('/',(req,res)=>{
 });
 // PUT ROUTE BY ID
 router.put('/:id',(req,res)=>{
-    res.json(`UPDATE thought ${req.params.id}`)
+    Thought.findByIdAndUpdate(
+        req.params.id,
+        {
+            thoughtText: req.body.text            
+        }
+    )
+    .then(updThought=>{
+        res.json(updThought);
+    })
+    .catch(err=>{
+        console.log(err);
+        res.status(500).json({msg:"error occurred",err})
+    })
 });
 // DELETE ROUTE BY ID
 router.delete('/:id',(req,res)=>{
-    res.json(`DELETE thought ${req.params.id}`)
+    Thought.findByIdAndDelete(req.params.id)
+    .then(delThought=>{
+        res.json(delThought);
+    })
+    .catch(err=>{
+        console.log(err);
+        res.status(500).json({msg:"error occurred",err})
+    })
 });
 
 // REACTION ROUTES
 // POST ROUTE
 router.post('/:id/reactions',(req,res)=>{
-    res.json(`POST a reaction on thought ${req.params.id}`)
+    Thought.findByIdAndUpdate(
+        req.params.id,
+        { $addToSet: { reactions: {
+            reactionBody: req.body.reactionBody,
+            username: req.body.username
+        }}}
+    )
+    .then(reaction=>{
+        res.json(reaction);
+    })
+    .catch(err=>{
+        console.log(err);
+        res.status(500).json({msg:"error occurred",err})
+    })
 });
 // DELETE ROUTE
 router.delete('/:id/reactions/:rId',(req,res)=>{
-    res.json(`DELETE reaction ${req.params.rId} on thought ${req.params.id}`)
+    Thought.findByIdAndUpdate(
+        req.params.id,
+        { $pull: { reactions: { reactionId: req.params.rId }}}
+    )
+    .then(delReaction=>{
+        res.json(delReaction);
+    })
+    .catch(err=>{
+        console.log(err);
+        res.status(500).json({msg:"error occurred",err})
+    })
 });
 
 module.exports = router
