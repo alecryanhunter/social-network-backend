@@ -1,9 +1,18 @@
 const router = require('express').Router();
+const { User, Thought } = require('../../models')
 
 // USER ROUTES
 // GET ROUTE - ALL
 router.get('/',(req,res)=>{
-    res.json("GET all users")
+    User.find()
+    .then(users => {
+        res.json(users);
+    })
+    .catch(err =>{
+        console.log(err);
+        res.status(500).json({msg:"error occurred",err})
+    })
+    // res.json("GET all users")
 });
 // GET ROUTE - SINGULAR BY ID, WITH FRIENDS
 router.get('/:id',(req,res)=>{
@@ -11,7 +20,15 @@ router.get('/:id',(req,res)=>{
 });
 // POST ROUTE
 router.post('/',(req,res)=>{
-    res.json(`POST a new user`)
+    User.create(
+        {
+            username: req.body.username,
+            email: req.body.email
+        }
+    )
+    .then(newUser => {
+        res.json(newUser);
+    })
 });
 // PUT ROUTE
 router.put('/:id',(req,res)=>{

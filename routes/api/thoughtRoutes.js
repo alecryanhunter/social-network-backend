@@ -1,9 +1,17 @@
 const router = require('express').Router();
+const { User, Thought } = require('../../models')
 
 // THOUGHT ROUTES
 // GET ROUTE - ALL
 router.get('/',(req,res)=>{
-    res.json("GET all thoughts")
+    Thought.find()
+    .then(thoughts=>{
+        res.json(thoughts);
+    })
+    .catch(err=>{
+        console.log(err);
+        res.status(500).json({msg:"error occurred",err})
+    })
 });
 // GET ROUTE - SINGULAR BY ID
 router.get('/:id',(req,res)=>{
@@ -11,10 +19,30 @@ router.get('/:id',(req,res)=>{
 });
 // POST ROUTE
 router.post('/',(req,res)=>{
-    res.json('POST a thought')
+    Thought.create(
+        {
+            thoughtText: req.body.text,
+            username: req.body.username
+        }
+    )
+    .then(newThought => {
+        // Adds thought's id to user's thoughts array
+        User.findOneAndUpdate(
+            {username: req.body.username},
+            {$push: { thoughts: newThought._id }}
+        ).catch(err =>{
+            console.log(err);
+            res.status(500).json({msg:"error occurred",err})
+        })
+        res.json(newThought);
+    })
+    .catch(err =>{
+        console.log(err);
+        res.status(500).json({msg:"error occurred",err})
+    })
 });
 // PUT ROUTE BY ID
-router.post('/:id',(req,res)=>{
+router.put('/:id',(req,res)=>{
     res.json(`UPDATE thought ${req.params.id}`)
 });
 // DELETE ROUTE BY ID

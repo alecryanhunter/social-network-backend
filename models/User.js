@@ -1,24 +1,25 @@
 const mongoose = require('mongoose');
+const thoughtSchema = require('./Thought');
 
 const userSchema = new mongoose.Schema({
     username: {
         type: String,
         required: true,
-        // unique?
-        // trimmed?
+        unique: true,
+        trim: true
     },
     email: {
         type: String,
         required: true,
-        // unique?
-        // email validation?
+        unique: true,
+        validate: {
+            validator: function(value) {
+                return /\b\w+@\w+\.\w{1,4}\b/gi.test(value);
+            }
+        }
     },
-    thoughts: {
-        // array of Thought _id values?
-    },
-    friends: {
-        // array of User _id values?
-    }
+    thoughts: [],
+    friends: []
 });
 
 // Returns length of given user's friends array
